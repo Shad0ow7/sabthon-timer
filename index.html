@@ -1,152 +1,75 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>حساب وقت السابثون</title>
+  <meta charset="UTF-8">
+  <title>موقع تغيير الخلفية</title>
   <style>
-    body { margin:0; padding:0; background-attachment:fixed; background-size:cover; background-position:center; background-repeat:no-repeat; font-family:Arial,sans-serif; }
-    .container { width:80vw; max-width:400px; min-width:280px; margin:40px auto; background:rgba(0,0,0,0.7); padding:16px; border-radius:10px; color:#fff; }
-    h2 { text-align:center; margin-bottom:16px; }
-    .currency-row { margin-bottom:16px; }
-    .currency-row label { display:block; margin-bottom:6px; font-weight:bold; }
-    .currency-row input { width:calc(50% - 8px); padding:6px; margin:4px; border-radius:4px; border:none; font-size:.95rem; }
-    .currency-row button { display:block; margin:8px auto; padding:6px 12px; background:#ffb03a; border:none; border-radius:5px; cursor:pointer; }
-    .currency-row button:hover { background:#ffa500; }
-    .output-box { margin-top:4px; padding:4px; border-radius:4px; text-align:center; font-size:.9rem; font-weight:bold; }
-    .seconds-box { border:2px solid red; }
-    .minutes-box { border:2px solid green; }
-    .hours-box   { border:2px solid blue; }
-    #controls { display:flex; gap:6px; margin-bottom:16px; }
-    #controls button { flex:1; padding:6px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; }
-    #controls button:hover { background:#444; }
-    #logToggle { width:100%; padding:6px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; margin-bottom:8px; }
-    #logToggle:hover { background:#444; }
-    #logPanel { display:none; background:rgba(30,30,30,0.9); padding:8px; border-radius:5px; max-height:150px; overflow-y:auto; margin-bottom:12px; font-size:.85rem; }
-    #logPanel h3 { margin:0 0 8px; border-bottom:1px solid #666; padding-bottom:4px; }
-    #logPanel ul { padding-left:16px; margin:0; }
-    #resetLogBtn { display:block; width:100%; padding:6px; margin-top:8px; background:#d9534f; border:none; border-radius:5px; color:#fff; cursor:pointer; }
-    #resetLogBtn:hover { background:#c9302c; }
-    #settings { margin-top:20px; }
-    #settings h4 { margin:8px 0 4px; }
-    #settings input, #settings button { margin-bottom:8px; padding:6px; border-radius:4px; border:none; width:100%; }
-    #settings input[type="range"], #settings input[type="color"] { width:calc(100% - 12px); }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+    }
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.5);
+      text-shadow: 1px 1px 5px black;
+    }
+    #bg-url {
+      padding: 10px;
+      width: 300px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>حساب وقت السابثون</h2>
-    <div id="controls"><button onclick="resetAll()">ريست</button></div>
-
-    <div class="currency-row" id="row1">
-      <label>بتس</label>
-      <input id="val1" type="number" placeholder="الكمية">
-      <input id="rate1" type="number" placeholder="الثواني لكل وحدة">
-      <button onclick="calcRow(1)">احسب</button>
-      <div id="out1"></div>
-    </div>
-    <div class="currency-row" id="row2">
-      <label>دولار</label>
-      <input id="val2" type="number" placeholder="الكمية">
-      <input id="rate2" type="number" placeholder="الثواني لكل وحدة">
-      <button onclick="calcRow(2)">احسب</button>
-      <div id="out2"></div>
-    </div>
-    <div class="currency-row" id="row3">
-      <label>تير 1</label>
-      <input id="val3" type="number" placeholder="الكمية">
-      <input id="rate3" type="number" placeholder="الثواني لكل وحدة">
-      <button onclick="calcRow(3)">احسب</button>
-      <div id="out3"></div>
-    </div>
-    <div class="currency-row" id="row4">
-      <label>تير 2</label>
-      <input id="val4" type="number" placeholder="الكمية">
-      <input id="rate4" type="number" placeholder="الثواني لكل وحدة">
-      <button onclick="calcRow(4)">احسب</button>
-      <div id="out4"></div>
-    </div>
-    <div class="currency-row" id="row5">
-      <label>تير 3</label>
-      <input id="val5" type="number" placeholder="الكمية">
-      <input id="rate5" type="number" placeholder="الثواني لكل وحدة">
-      <button onclick="calcRow(5)">احسب</button>
-      <div id="out5"></div>
-    </div>
-
-    <button id="logToggle" onclick="toggleLog()">سجل المعادلات</button>
-    <div id="logPanel">
-      <h3>سجل المعادلات</h3>
-      <ul id="logList"></ul>
-      <button id="resetLogBtn" onclick="resetLog()">ريست السجل</button>
-    </div>
-
-    <div id="settings">
-      <h4>تغيير خلفية الصفحة (رابط صورة)</h4>
-      <input id="bgUrl" type="text" placeholder="رابط الخلفية">
-      <button onclick="applyBg()">تطبيق</button>
-      <h4>لون الخلفية الشفافة</h4>
-      <input id="overlayColor" type="color">
-      <input id="overlayOpacity" type="range" min="0" max="1" step="0.1">
-    </div>
+  <div class="content">
+    <h1>أدخل رابط الخلفية</h1>
+    <input type="text" id="bg-url" placeholder="ضع رابط الصورة هنا">
+    <button onclick="changeBg()">تغيير الخلفية</button>
+    <button onclick="resetBg()">إعادة الخلفية الافتراضية</button>
   </div>
 
   <script>
-    const labels = ['بتس','دولار','تير 1','تير 2','تير 3'];
-    window.onload = () => {
-      for (let i = 1; i <= 5; i++) {
-        const v = localStorage.getItem('val' + i);
-        const r = localStorage.getItem('rate' + i);
-        if (v) document.getElementById('val' + i).value = v;
-        if (r) document.getElementById('rate' + i).value = r;
+    const defaultBg = "https://i.imgur.com/EUDX95u.jpeg";
+
+    window.onload = function () {
+      const savedBg = localStorage.getItem("bgImage");
+      if (savedBg) {
+        document.body.style.backgroundImage = `url("${savedBg}")`;
+      } else {
+        document.body.style.backgroundImage = `url("${defaultBg}")`;
       }
-      const bg = localStorage.getItem('bgImage'); if (bg) document.body.style.backgroundImage = `url(${bg})`;
-      const ovColor = localStorage.getItem('overlayColor'); const ovOp = localStorage.getItem('overlayOpacity');
-      if (ovColor) document.getElementById('overlayColor').value = ovColor;
-      if (ovOp) document.getElementById('overlayOpacity').value = ovOp;
-      applyOverlay(); renderLogs();
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundPosition = 'center';
     };
 
-    function calcRow(i) {
-      const v = parseFloat(document.getElementById('val' + i).value);
-      const r = parseFloat(document.getElementById('rate' + i).value);
-      localStorage.setItem('val' + i, v);
-      localStorage.setItem('rate' + i, r);
-      if (!isNaN(v) && !isNaN(r)) {
-        const total = v * r;  // unified logic for all currencies
-        const sec = total;
-        const min = parseFloat((total / 60).toFixed(2));
-        const hr = parseFloat((total / 3600).toFixed(2));
-        const out = document.getElementById('out' + i);
-        out.innerHTML =
-          `<div class="output-box seconds-box">ثواني: ${sec}</div>` +
-          `<div class="output-box minutes-box">دقائق: ${min}</div>` +
-          `<div class="output-box hours-box">ساعات: ${hr}</div>`;
-        addLog(i, total, sec, min, hr);
-      }
+    function changeBg() {
+      const url = document.getElementById('bg-url').value;
+      document.body.style.backgroundImage = `url("${url}")`;
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundPosition = 'center';
+      localStorage.setItem("bgImage", url);
     }
 
-    function addLog(i, total, sec, min, hr) {
-      const time = new Date().toLocaleTimeString('ar-EG', { hour:'2-digit', minute:'2-digit' });
-      let logs = JSON.parse(localStorage.getItem('logs') || '[]');
-      logs.push(`[${time}h] ${labels[i-1]}: ${total}s → ${min}m → ${hr}h`);
-      localStorage.setItem('logs', JSON.stringify(logs)); renderLogs();
+    function resetBg() {
+      localStorage.removeItem("bgImage");
+      document.body.style.backgroundImage = `url("${defaultBg}")`;
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundPosition = 'center';
     }
-
-    function renderLogs() {
-      const list = document.getElementById('logList'); list.innerHTML = '';
-      let logs = JSON.parse(localStorage.getItem('logs') || '[]');
-      logs.slice().reverse().forEach(e => { const li = document.createElement('li'); li.textContent = e; list.appendChild(li); });
-    }
-
-    function toggleLog() { const panel = document.getElementById('logPanel'); panel.style.display = panel.style.display==='block'?'none':'block'; }
-    function resetAll() { for (let i = 1; i <= 5; i++) { document.getElementById('val' + i).value=''; document.getElementById('rate' + i).value=''; document.getElementById('out' + i).innerHTML=''; localStorage.removeItem('val' + i); localStorage.removeItem('rate' + i); } }
-    function resetLog(){ localStorage.removeItem('logs'); renderLogs(); }
-    function applyBg(){ const url = document.getElementById('bgUrl').value; document.body.style.backgroundImage = `url(${url})`; localStorage.setItem('bgImage',url); }
-    function applyOverlay(){ const hex=document.getElementById('overlayColor').value, op=document.getElementById('overlayOpacity').value; localStorage.setItem('overlayColor',hex); localStorage.setItem('overlayOpacity',op); const rgb = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i).slice(1).map(x=>parseInt(x,16)); document.querySelector('.container').style.backgroundColor = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${op})`; }
-
-    document.getElementById('overlayColor').addEventListener('input', applyOverlay);
-    document.getElementById('overlayOpacity').addEventListener('input', applyOverlay);
   </script>
 </body>
 </html>
