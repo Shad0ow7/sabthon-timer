@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>حساب وقت السابثون</title>
   <style>
-    body { margin:0; padding:0; background-attachment:fixed; background-size:cover; background-position:center; background-repeat:no-repeat; font-family:Arial,sans-serif; }
+    body {
+      margin:0; padding:0;
+      background-image: url('https://i.imgur.com/EUDX95u.jpeg');
+      background-attachment:fixed; background-size:cover; background-position:center; background-repeat:no-repeat;
+      font-family:Arial,sans-serif;
+    }
     .container { width:80vw; max-width:400px; min-width:280px; margin:40px auto; background:rgba(0,0,0,0.7); padding:16px; border-radius:10px; color:#fff; }
     h2 { text-align:center; margin-bottom:16px; }
     .currency-row { margin-bottom:16px; }
@@ -16,7 +21,7 @@
     .output-box { margin-top:4px; padding:4px; border-radius:4px; text-align:center; font-size:.9rem; font-weight:bold; }
     .seconds-box { border:2px solid red; }
     .minutes-box { border:2px solid green; }
-    .hours-box   { border:2px solid blue; }
+    .hours-box { border:2px solid blue; }
     #controls { display:flex; gap:6px; margin-bottom:16px; }
     #controls button { flex:1; padding:6px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; }
     #controls button:hover { background:#444; }
@@ -38,6 +43,7 @@
     <h2>حساب وقت السابثون</h2>
     <div id="controls"><button onclick="resetAll()">ريست</button></div>
 
+    <!-- صف البتس -->
     <div class="currency-row" id="row1">
       <label>بتس</label>
       <input id="val1" type="number" placeholder="الكمية">
@@ -45,6 +51,8 @@
       <button onclick="calcRow(1)">احسب</button>
       <div id="out1"></div>
     </div>
+
+    <!-- صف الدولار -->
     <div class="currency-row" id="row2">
       <label>دولار</label>
       <input id="val2" type="number" placeholder="الكمية">
@@ -52,6 +60,8 @@
       <button onclick="calcRow(2)">احسب</button>
       <div id="out2"></div>
     </div>
+
+    <!-- بقية الصفوف -->
     <div class="currency-row" id="row3">
       <label>تير 1</label>
       <input id="val3" type="number" placeholder="الكمية">
@@ -85,6 +95,7 @@
       <h4>تغيير خلفية الصفحة (رابط صورة)</h4>
       <input id="bgUrl" type="text" placeholder="رابط الخلفية">
       <button onclick="applyBg()">تطبيق</button>
+      <button onclick="resetBg()">إعادة الخلفية</button>
       <h4>لون الخلفية الشفافة</h4>
       <input id="overlayColor" type="color">
       <input id="overlayOpacity" type="range" min="0" max="1" step="0.1">
@@ -93,15 +104,20 @@
 
   <script>
     const labels = ['بتس','دولار','تير 1','تير 2','تير 3'];
+    const defaultBg = "url('https://i.imgur.com/EUDX95u.jpeg')";
+
     window.onload = () => {
+      document.body.style.backgroundImage = defaultBg;
       for (let i = 1; i <= 5; i++) {
         const v = localStorage.getItem('val' + i);
         const r = localStorage.getItem('rate' + i);
         if (v) document.getElementById('val' + i).value = v;
         if (r) document.getElementById('rate' + i).value = r;
       }
-      const bg = localStorage.getItem('bgImage'); if (bg) document.body.style.backgroundImage = `url(${bg})`;
-      const ovColor = localStorage.getItem('overlayColor'); const ovOp = localStorage.getItem('overlayOpacity');
+      const bg = localStorage.getItem('bgImage');
+      if (bg) document.body.style.backgroundImage = `url(${bg})`;
+      const ovColor = localStorage.getItem('overlayColor');
+      const ovOp = localStorage.getItem('overlayOpacity');
       if (ovColor) document.getElementById('overlayColor').value = ovColor;
       if (ovOp) document.getElementById('overlayOpacity').value = ovOp;
       applyOverlay(); renderLogs();
@@ -113,10 +129,15 @@
       localStorage.setItem('val' + i, v);
       localStorage.setItem('rate' + i, r);
       if (!isNaN(v) && !isNaN(r)) {
-        const total = v * r;  // unified logic for all currencies
+        const total = v * r;
         const sec = total;
-        const min = parseFloat((total / 60).toFixed(2));
-        const hr = parseFloat((total / 3600).toFixed(2));
+        let min;
+        if (i === 1) {
+          min = Math.floor(sec / 60);
+        } else {
+          min = parseFloat((sec / 60).toFixed(2));
+        }
+        const hr = parseFloat((sec / 3600).toFixed(2));
         const out = document.getElementById('out' + i);
         out.innerHTML =
           `<div class="output-box seconds-box">ثواني: ${sec}</div>` +
@@ -143,8 +164,8 @@
     function resetAll() { for (let i = 1; i <= 5; i++) { document.getElementById('val' + i).value=''; document.getElementById('rate' + i).value=''; document.getElementById('out' + i).innerHTML=''; localStorage.removeItem('val' + i); localStorage.removeItem('rate' + i); } }
     function resetLog(){ localStorage.removeItem('logs'); renderLogs(); }
     function applyBg(){ const url = document.getElementById('bgUrl').value; document.body.style.backgroundImage = `url(${url})`; localStorage.setItem('bgImage',url); }
+    function resetBg(){ localStorage.removeItem('bgImage'); document.body.style.backgroundImage = defaultBg; }
     function applyOverlay(){ const hex=document.getElementById('overlayColor').value, op=document.getElementById('overlayOpacity').value; localStorage.setItem('overlayColor',hex); localStorage.setItem('overlayOpacity',op); const rgb = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i).slice(1).map(x=>parseInt(x,16)); document.querySelector('.container').style.backgroundColor = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${op})`; }
-
     document.getElementById('overlayColor').addEventListener('input', applyOverlay);
     document.getElementById('overlayOpacity').addEventListener('input', applyOverlay);
   </script>
