@@ -3,44 +3,164 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- أيقونة الموقع المحسنة -->
+  <link rel="icon" type="image/png" href="https://i.imgur.com/42UY8zS.png" sizes="32x32">
   <title>حساب وقت السابثون</title>
   <style>
     body {
       margin:0; padding:0;
       background-image: url('https://i.imgur.com/EUDX95u.jpeg');
-      background-attachment:fixed; background-size:cover; background-position:center; background-repeat:no-repeat;
+      background-attachment:fixed; 
+      background-size:cover; 
+      background-position:center; 
+      background-repeat:no-repeat;
       font-family:Arial,sans-serif;
     }
-    .container { width:80vw; max-width:400px; min-width:280px; margin:40px auto; background:rgba(0,0,0,0.7); padding:16px; border-radius:10px; color:#fff; }
-    h2 { text-align:center; margin-bottom:16px; }
+    .container { 
+      width:100vw; 
+      max-width:400px; 
+      min-width:280px; 
+      margin:40px auto; 
+      background:rgba(0,0,0,0.7); 
+      padding:16px; 
+      border-radius:10px; 
+      color:#fff; 
+    }
+    .logo-header {
+      text-align: center;
+      margin-bottom: 5px; /* مسافة مخفضة جدًا */
+    }
+    .logo-img {
+      width: 160px; /* حجم أصغر مع وضوح أعلى */
+      height: auto;
+      margin: 0 auto 3px; /* مسافة أسفل الشعار 3px فقط */
+      display: block;
+      filter: brightness(1.2); /* زيادة الوضوح */
+    }
+    h2 { 
+      text-align:center; 
+      margin:0;
+      font-size: 1.6rem;
+      color: #ffb03a;
+      padding-top: 0;
+    }
+    /* باقي التنسيقات دون تغيير */
     .currency-row { margin-bottom:16px; }
     .currency-row label { display:block; margin-bottom:6px; font-weight:bold; }
-    .currency-row input { width:calc(50% - 8px); padding:6px; margin:4px; border-radius:4px; border:none; font-size:.95rem; }
-    .currency-row button { display:block; margin:8px auto; padding:6px 12px; background:#ffb03a; border:none; border-radius:5px; cursor:pointer; }
+    .currency-row input { 
+      width:calc(50% - 8px); 
+      padding:6px; 
+      margin:4px; 
+      border-radius:4px; 
+      border:none; 
+      font-size:.95rem; 
+    }
+    .currency-row button { 
+      display:block; 
+      margin:8px auto; 
+      padding:6px 12px; 
+      background:#ffb03a; 
+      border:none; 
+      border-radius:5px; 
+      cursor:pointer; 
+    }
     .currency-row button:hover { background:#ffa500; }
-    .output-box { margin-top:4px; padding:4px; border-radius:4px; text-align:center; font-size:.9rem; font-weight:bold; }
+    .output-box { 
+      margin-top:4px; 
+      padding:4px; 
+      border-radius:4px; 
+      text-align:center; 
+      font-size:.9rem; 
+      font-weight:bold; 
+    }
     .seconds-box { border:2px solid red; }
     .minutes-box { border:2px solid green; }
     .hours-box { border:2px solid blue; }
-    #controls { display:flex; gap:6px; margin-bottom:16px; }
-    #controls button { flex:1; padding:6px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; }
+    #controls { 
+      display:flex; 
+      gap:6px; 
+      margin-bottom:16px; 
+    }
+    #controls button { 
+      flex:1; 
+      padding:6px; 
+      background:#555; 
+      border:none; 
+      border-radius:5px; 
+      color:#fff; 
+      cursor:pointer; 
+    }
     #controls button:hover { background:#444; }
-    #logToggle { width:100%; padding:6px; background:#555; border:none; border-radius:5px; color:#fff; cursor:pointer; margin-bottom:8px; }
+    #logToggle { 
+      width:100%; 
+      padding:6px; 
+      background:#555; 
+      border:none; 
+      border-radius:5px; 
+      color:#fff; 
+      cursor:pointer; 
+      margin-bottom:8px; 
+    }
     #logToggle:hover { background:#444; }
-    #logPanel { display:none; background:rgba(30,30,30,0.9); padding:8px; border-radius:5px; max-height:150px; overflow-y:auto; margin-bottom:12px; font-size:.85rem; }
-    #logPanel h3 { margin:0 0 8px; border-bottom:1px solid #666; padding-bottom:4px; }
-    #logPanel ul { padding-left:16px; margin:0; }
-    #resetLogBtn { display:block; width:100%; padding:6px; margin-top:8px; background:#d9534f; border:none; border-radius:5px; color:#fff; cursor:pointer; }
+    #logPanel { 
+      display:none; 
+      background:rgba(30,30,30,0.9); 
+      padding:8px; 
+      border-radius:5px; 
+      max-height:150px; 
+      overflow-y:auto; 
+      margin-bottom:12px; 
+      font-size:.85rem; 
+    }
+    #logPanel h3 { 
+      margin:0 0 8px; 
+      border-bottom:1px solid #666; 
+      padding-bottom:4px; 
+    }
+    #logPanel ul { 
+      padding-left:16px; 
+      margin:0; 
+    }
+    #resetLogBtn { 
+      display:block; 
+      width:100%; 
+      padding:6px; 
+      margin-top:8px; 
+      background:#d9534f; 
+      border:none; 
+      border-radius:5px; 
+      color:#fff; 
+      cursor:pointer; 
+    }
     #resetLogBtn:hover { background:#c9302c; }
-    #settings { margin-top:20px; }
-    #settings h4 { margin:8px 0 4px; }
-    #settings input, #settings button { margin-bottom:8px; padding:6px; border-radius:4px; border:none; width:100%; }
-    #settings input[type="range"], #settings input[type="color"] { width:calc(100% - 12px); }
+    #settings { 
+      margin-top:20px; 
+    }
+    #settings h4 { 
+      margin:8px 0 4px; 
+    }
+    #settings input, 
+    #settings button { 
+      margin-bottom:8px; 
+      padding:6px; 
+      border-radius:4px; 
+      border:none; 
+      width:100%; 
+    }
+    #settings input[type="range"], 
+    #settings input[type="color"] { 
+      width:calc(100% - 12px); 
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>حساب وقت السابثون</h2>
+    <!-- قسم الشعار المعدل -->
+    <div class="logo-header">
+      <img src="https://i.imgur.com/42UY8zS.png" alt="شعار السابثون" class="logo-img">
+      <h2>حساب وقت السابثون</h2>
+    </div>
+
     <div id="controls"><button onclick="resetAll()">ريست</button></div>
 
     <!-- صف البتس -->
